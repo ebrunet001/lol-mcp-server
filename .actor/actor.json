@@ -11,7 +11,7 @@
     "meta": {
         "author": "Emmanuel-Aristide",
         "categories": ["GAMING", "AI", "ANALYTICS"],
-        "website": "https://github.com/emmanuel-aristide/lol-mcp-actor"
+        "website": "https://github.com/ebrunet001/lol-mcp-server"
     },
     "input": "./input_schema.json",
     "output": "./output_schema.json",

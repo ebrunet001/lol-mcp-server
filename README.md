@@ -9,6 +9,10 @@ Connect AI assistants to League of Legends data via Model Context Protocol. Let 
 - **Match History** - Retrieve recent matches with detailed statistics
 - **Champion Mastery** - View mastery levels, points and top champions
 - **Performance Analysis** - Let AI analyze your gameplay and suggest improvements
+- **Live Game** - Check if a player is currently in a match
+- **Player Comparison** - Compare stats between two players
+- **Data Dragon Integration** - Champion, item, rune and spell names automatically resolved
+- **Intelligent Caching** - Reduces API calls with smart TTL-based caching
 - **Multi-Region Support** - EUW, NA, KR, BR, and all other LoL servers
 
 ## 🚀 Quick Start
@@ -67,11 +71,14 @@ Once connected, your AI assistant can use these tools:
 | `lol_get_ranked` | Get ranked stats (tier, rank, LP, wins/losses) |
 | `lol_get_match_history` | Get list of recent match IDs |
 | `lol_get_match_details` | Get detailed info about a specific match |
+| `lol_get_match_timeline` | Get minute-by-minute match timeline |
 | `lol_get_champion_mastery` | Get champion mastery data |
 | `lol_get_player_profile` | Get complete player profile in one call |
+| `lol_get_live_game` | Check if a player is currently in game |
 | `lol_analyze_performance` | Analyze recent performance with recommendations |
 | `lol_analyze_champion` | Analyze performance on a specific champion |
 | `lol_get_improvement_tips` | Get personalized improvement tips |
+| `lol_compare_players` | Compare stats between two players |
 
 ## 💬 Example Prompts
 
@@ -143,6 +150,8 @@ Give me tips to climb from Gold to Platinum based on my gameplay patterns
 |-------|------|----------|-------------|
 | `riotApiKey` | string | Yes | Your Riot Games API key |
 | `defaultRegion` | string | No | Default region (default: `euw1`) |
+| `defaultLanguage` | string | No | Language for analysis (default: `en`) |
+| `cacheEnabled` | boolean | No | Enable intelligent caching (default: `true`) |
 
 ## 📊 Output
 
@@ -179,6 +188,7 @@ The MCP server exposes League of Legends data through the Model Context Protocol
 
 ## 📚 Resources
 
+- [GitHub Repository](https://github.com/ebrunet001/lol-mcp-server)
 - [Riot Developer Portal](https://developer.riotgames.com/)
 - [Riot API Documentation](https://developer.riotgames.com/apis)
 - [Claude Desktop MCP Setup](https://docs.anthropic.com/en/docs/agents-and-tools/mcp)
