@@ -1,0 +1,117 @@
+# League of Legends MCP Server
+
+> MCP server for League of Legends data and AI-powered performance analysis via Riot Games API
+
+## Quick Start
+
+This is an MCP (Model Context Protocol) server that provides League of Legends player data and performance analysis. Connect to it from Claude Desktop or any MCP-compatible AI assistant.
+
+### Connection
+
+**Standby URL**: `https://lol-mcp-server.apify.actor/sse`
+
+### Required Input
+
+```json
+{
+  "riotApiKey": "YOUR_RIOT_API_KEY",
+  "defaultRegion": "euw1"
+}
+```
+
+Get your API key at: https://developer.riotgames.com/
+
+## Available Tools
+
+### Data Retrieval Tools ($0.005/call)
+
+1. **lol_get_account** - Get account by Riot ID (gameName#tagLine)
+   - Returns PUUID needed for other API calls
+   - Parameters: gameName, tagLine, region (optional)
+
+2. **lol_get_summoner** - Get summoner information
+   - Returns level, profile icon
+   - Parameters: puuid, region (optional)
+
+3. **lol_get_ranked** - Get ranked information
+   - Returns tier, rank, LP, win/loss for Solo/Duo and Flex
+   - Parameters: puuid, region (optional)
+
+4. **lol_get_match_history** - Get recent match IDs
+   - Returns list of match IDs for further analysis
+   - Parameters: puuid, count (1-100), queueType (ranked/normal/all), region
+
+5. **lol_get_match_details** - Get detailed match information
+   - Returns full match data including all participants
+   - Parameters: matchId, region (optional)
+
+6. **lol_get_champion_mastery** - Get champion mastery data
+   - Returns top champions with mastery points and levels
+   - Parameters: puuid, top (number of champions), region
+
+7. **lol_get_player_profile** - Get complete player profile
+   - Returns account, summoner, and ranked info in one call
+   - Parameters: gameName, tagLine, region (optional)
+
+### Analysis Tools ($0.02/call)
+
+8. **lol_analyze_performance** - Comprehensive performance analysis
+   - Analyzes recent matches and provides insights
+   - Returns: win rate, KDA, CS/min, vision, strengths, weaknesses, recommendations
+   - Parameters: puuid, matchCount (5-50), queueType, region
+
+9. **lol_analyze_champion** - Champion-specific analysis
+   - Analyzes performance on a specific champion
+   - Returns: win rate, KDA, CS, damage stats for that champion
+   - Parameters: puuid, championName, matchCount (3-50), region
+
+10. **lol_get_improvement_tips** - Personalized improvement tips
+    - Provides actionable tips based on performance metrics
+    - Returns prioritized tips with current vs target values
+    - Parameters: puuid, matchCount (5-50), queueType, region
+
+## Regions
+
+Supported regions: euw1, eun1, na1, kr, br1, la1, la2, oc1, tr1, ru, jp1, ph2, sg2, th2, tw2, vn2
+
+## Example Prompts
+
+### Getting Started
+- "Get the profile for PlayerName#TAG on EUW"
+- "Show me the ranked stats for this player"
+- "What are their top 10 mastered champions?"
+
+### Match Analysis
+- "Get the last 20 ranked matches for this player"
+- "Show me the details of match EUW1_1234567890"
+- "What champions did they play recently?"
+
+### Performance Insights
+- "Analyze this player's recent performance"
+- "How well do they play Jinx?"
+- "Give me improvement tips for this player"
+- "What are their strengths and weaknesses?"
+
+## Typical Workflow
+
+1. Start with `lol_get_player_profile` to get account info and PUUID
+2. Use `lol_analyze_performance` for overall insights
+3. Deep dive with `lol_analyze_champion` for specific champions
+4. Get actionable advice with `lol_get_improvement_tips`
+
+## Pricing
+
+- Data retrieval: $0.005 per tool call
+- AI analysis: $0.02 per tool call
+
+## Rate Limits
+
+This server respects Riot Games API rate limits:
+- 20 requests/second
+- 100 requests/2 minutes
+
+## Links
+
+- Riot Developer Portal: https://developer.riotgames.com/
+- MCP Protocol: https://modelcontextprotocol.io/
+- Apify: https://apify.com/

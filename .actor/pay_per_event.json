@@ -1,0 +1,30 @@
+{
+    "schemaVersion": 1,
+    "events": {
+        "tool-read": {
+            "displayName": "Data Retrieval",
+            "description": "Fetching data from Riot Games API (account, summoner, ranked, mastery)",
+            "priceUsd": 0.003
+        },
+        "tool-match": {
+            "displayName": "Match Data",
+            "description": "Retrieving match history, match details, or match timeline data",
+            "priceUsd": 0.005
+        },
+        "tool-analysis": {
+            "displayName": "AI Analysis",
+            "description": "AI-powered performance analysis, champion analysis, and improvement recommendations",
+            "priceUsd": 0.015
+        },
+        "tool-live": {
+            "displayName": "Live Game",
+            "description": "Checking live game status and spectator data",
+            "priceUsd": 0.008
+        },
+        "tool-compare": {
+            "displayName": "Player Comparison",
+            "description": "Comparing stats between two players",
+            "priceUsd": 0.025
+        }
+    }
+}

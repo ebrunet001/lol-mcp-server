@@ -1,0 +1,14 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "LoL MCP Server Output",
+    "description": "Output from the League of Legends MCP Server Actor",
+    "type": "object",
+    "properties": {
+        "runUrl": {
+            "type": "string",
+            "title": "Run Details",
+            "description": "Link to the Actor run details page",
+            "template": "{{links.publicRunUrl}}"
+        }
+    }
+}

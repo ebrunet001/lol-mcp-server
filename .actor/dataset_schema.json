@@ -1,0 +1,66 @@
+{
+    "actorSpecification": 1,
+    "title": "LoL MCP Server Logs",
+    "description": "Server logs and session information from the LoL MCP Server",
+    "fields": {
+        "sessionId": {
+            "type": "string",
+            "title": "Session ID",
+            "description": "Unique identifier for the MCP session",
+            "example": "abc123-def456"
+        },
+        "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "ISO 8601 timestamp of the event",
+            "example": "2026-01-20T10:30:00.000Z"
+        },
+        "event": {
+            "type": "string",
+            "title": "Event Type",
+            "description": "Type of event logged",
+            "example": "tool_call"
+        },
+        "toolName": {
+            "type": "string",
+            "title": "Tool Name",
+            "description": "Name of the MCP tool invoked",
+            "example": "get_match_history"
+        },
+        "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Result status of the operation",
+            "example": "success"
+        }
+    },
+    "views": {
+        "logs": {
+            "title": "Server Logs",
+            "transformation": {
+                "fields": ["timestamp", "event", "toolName", "status", "sessionId"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "timestamp": {
+                        "label": "Time",
+                        "format": "text"
+                    },
+                    "event": {
+                        "label": "Event",
+                        "format": "text"
+                    },
+                    "toolName": {
+                        "label": "Tool",
+                        "format": "text"
+                    },
+                    "status": {
+                        "label": "Status",
+                        "format": "text"
+                    }
+                }
+            }
+        }
+    }
+}

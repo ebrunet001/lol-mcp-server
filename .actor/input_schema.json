@@ -1,0 +1,84 @@
+{
+    "title": "League of Legends MCP Server",
+    "description": "MCP server for AI-powered League of Legends game analysis. Connect to Claude Desktop to analyze your matches and get improvement recommendations.\n\n## Setup Guide\n\n### Step 1: Get Riot API Key\n1. Go to https://developer.riotgames.com\n2. Log in with your Riot account\n3. Copy your Development API key (expires every 24h)\n4. For production, apply for a Personal or Production key\n\n### Step 2: Configure this Actor\n1. Add your Riot API key below or as secret env variable `RIOT_API_KEY`\n2. Set your default region\n3. Save and Build\n\n### Step 3: Enable Standby Mode\n1. Go to Actor Settings > Standby\n2. Set Idle timeout to 3600 seconds\n3. Note your Standby URL\n\n### Step 4: Connect Claude Desktop\n1. Open Claude Desktop > Settings > Connectors\n2. Add Custom Connector\n3. URL: `https://<username>--lol-mcp-server.apify.actor/mcp?token=<apify-token>`\n\n### Example Prompts\n- \"Analyse mes 10 dernières parties\"\n- \"Quels sont mes points faibles ?\"\n- \"Compare mes stats sur Jinx vs Caitlyn\"\n- \"Montre ma progression ce mois-ci\"",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "riotApiKey": {
+            "title": "Riot API Key",
+            "type": "string",
+            "description": "Your Riot Games API key. Get it from <a href='https://developer.riotgames.com/' target='_blank'>developer.riotgames.com</a>. Log in with your Riot account, then copy the key from the Dashboard. Can also be set as RIOT_API_KEY environment variable. Development keys expire every 24h.",
+            "editor": "textfield",
+            "isSecret": true,
+            "sectionCaption": "Riot Games Authentication",
+            "sectionDescription": "A Riot API key is required to access League of Legends data."
+        },
+        "defaultRegion": {
+            "title": "Default Region",
+            "type": "string",
+            "description": "Select your primary game server.",
+            "editor": "select",
+            "default": "euw1",
+            "enum": [
+                "euw1",
+                "eun1",
+                "na1",
+                "kr",
+                "br1",
+                "la1",
+                "la2",
+                "oc1",
+                "tr1",
+                "ru",
+                "jp1",
+                "ph2",
+                "sg2",
+                "th2",
+                "tw2",
+                "vn2"
+            ],
+            "enumTitles": [
+                "Europe West (EUW)",
+                "Europe Nordic & East (EUNE)",
+                "North America (NA)",
+                "Korea (KR)",
+                "Brazil (BR)",
+                "Latin America North (LAN)",
+                "Latin America South (LAS)",
+                "Oceania (OCE)",
+                "Turkey (TR)",
+                "Russia (RU)",
+                "Japan (JP)",
+                "Philippines (PH)",
+                "Singapore (SG)",
+                "Thailand (TH)",
+                "Taiwan (TW)",
+                "Vietnam (VN)"
+            ],
+            "sectionCaption": "Settings",
+            "sectionDescription": "Configure default options for the MCP server."
+        },
+        "defaultLanguage": {
+            "title": "Default Language",
+            "type": "string",
+            "description": "Language for AI-generated analysis and recommendations.",
+            "editor": "select",
+            "default": "en",
+            "enum": [
+                "en",
+                "fr"
+            ],
+            "enumTitles": [
+                "English",
+                "Français"
+            ]
+        },
+        "cacheEnabled": {
+            "title": "Enable Cache",
+            "type": "boolean",
+            "description": "Cache reduces API calls and improves response times. Recommended: enabled.",
+            "default": true
+        }
+    },
+    "required": []
+}
