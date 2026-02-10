@@ -21,44 +21,29 @@ Connect AI assistants to League of Legends data via Model Context Protocol. Let 
 
 1. Go to [Riot Developer Portal](https://developer.riotgames.com/)
 2. Log in with your **Riot Games account** (same as your LoL account)
-3. Once logged in, a **Development API Key** is automatically generated
-4. Copy your API key from the dashboard
+3. Copy your **Development API Key** from the dashboard
 
-> ⚠️ **Important**: Development keys expire every **24 hours**. You'll need to regenerate them daily. For permanent access, register a Personal or Production application.
+> ⚠️ Development keys expire every **24 hours**. For permanent access, apply for a Personal key.
 
-### 2. Run the Actor on Apify
+### 2. Configure the Actor
 
-1. Go to the [League of Legends MCP Server](https://apify.com/scrapmania/lol-mcp-server) Actor page
-2. Click **Start**
-3. Enter your Riot API Key in the input
-4. The Actor will start and provide you with an MCP endpoint URL
+1. Go to the [LoL MCP Server](https://apify.com/scrapmania/lol-mcp-server) on Apify
+2. Enter your **Riot API Key** in the Input tab
+3. Click **Save**
 
 ### 3. Connect to Claude Desktop
 
-Add the following configuration to your Claude Desktop config file:
+1. Open **Claude Desktop** → **Settings** → **Connectors**
+2. Click **Add Custom Connector**
+3. Paste this URL:
 
-**On macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-
-**On Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "lol-mcp": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote@latest",
-        "https://scrapmania--lol-mcp-server.apify.actor/mcp?token=YOUR_APIFY_TOKEN"
-      ]
-    }
-  }
-}
+```
+https://scrapmania--lol-mcp-server.apify.actor/mcp?token=YOUR_APIFY_TOKEN
 ```
 
-Replace `YOUR_APIFY_TOKEN` with your Apify API token (found in [Apify Console → Settings → Integrations](https://console.apify.com/account/integrations)).
+Replace `YOUR_APIFY_TOKEN` with your [Apify API token](https://console.apify.com/account/integrations).
 
-**Restart Claude Desktop** after saving the configuration.
+That's it! Claude can now access your League of Legends data.
 
 ## 🔧 Available Tools
 
