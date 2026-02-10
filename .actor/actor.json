@@ -10,7 +10,7 @@
     "maxMemoryMbytes": 512,
     "meta": {
         "author": "Emmanuel-Aristide",
-        "categories": ["AI", "AGENTS", "MCP_SERVERS"],
+        "categories": ["AI", "MCP_SERVERS", "INTEGRATIONS"],
         "website": "https://github.com/ebrunet001/lol-mcp-server"
     },
     "input": "./input_schema.json",
