@@ -154,18 +154,21 @@ Actor.main(async () => {
     // Get input
     const input = await Actor.getInput<ActorInput>();
 
-    if (!input?.riotApiKey) {
-        throw new Error('Riot API key is required. Please provide it in the input. Get one at https://developer.riotgames.com/');
-    }
-
-    // Initialize services
-    const defaultRegion = input.defaultRegion || 'euw1';
-    const cacheEnabled = input.cacheEnabled !== false;
+    // Riot API key: from input, environment variable, or missing (Standby will start but tools will fail)
+    const riotApiKey = input?.riotApiKey || process.env.RIOT_API_KEY || '';
+    const defaultRegion = input?.defaultRegion || 'euw1';
+    const cacheEnabled = input?.cacheEnabled !== false;
 
     log.info('Initializing LoL Stats MCP...');
 
     initCache(cacheEnabled);
-    initRiotClient(input.riotApiKey, defaultRegion);
+
+    if (!riotApiKey) {
+        log.warning('No Riot API key provided. Set it in Actor input or as RIOT_API_KEY environment variable.');
+        log.warning('The MCP server will start but API calls will fail until a key is provided.');
+    }
+
+    initRiotClient(riotApiKey, defaultRegion);
     log.info(`Riot API client initialized with default region: ${defaultRegion}`);
 
     // Detect how the run was started

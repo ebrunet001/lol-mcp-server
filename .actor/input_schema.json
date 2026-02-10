@@ -80,5 +80,5 @@
             "default": true
         }
     },
-    "required": ["riotApiKey"]
+    "required": []
 }
