@@ -1,17 +1,17 @@
 {
     "title": "League of Legends MCP Server",
-    "description": "Connect AI assistants to your League of Legends data.\n\n## Setup\n\n1. Enter your **Riot API Key** below (get one at https://developer.riotgames.com)\n2. Select your **region** and click **Save**\n3. In Claude Desktop → Settings → Connectors → Add Custom Connector:\n   `https://scrapmania--lol-mcp-server.apify.actor/mcp?token=YOUR_APIFY_TOKEN`\n\n## Example Prompts\n- \"Show me the profile of Faker#KR1\"\n- \"Analyze my last 20 ranked games\"\n- \"Compare my stats on Jinx vs Caitlyn\"\n- \"Give me tips to climb from Gold to Platinum\"",
+    "description": "Let AI coach you on League of Legends. Get personalized analysis of your matches, champion stats, and improvement tips — directly in Claude Desktop.\n\n## 3-Step Setup\n\n1. **Get your Riot API Key** → <a href='https://developer.riotgames.com' target='_blank'>developer.riotgames.com</a> (free, takes 30 seconds)\n2. **Paste it below** and select your region\n3. **Connect Claude Desktop** → Settings → Connectors → Add Custom Connector:\n   `https://scrapmania--lol-mcp-server.apify.actor/mcp?token=YOUR_APIFY_TOKEN`\n\n## What you can ask Claude\n- \"I just lost 5 games in a row. Analyze what's going wrong — am I tilting or is there a real pattern?\"\n- \"Based on my last 50 games, build me an optimal 3-champion pool to climb in ranked\"\n- \"Compare me and my duo partner. Where do we complement each other? Where are we both weak?\"\n- \"I'm a support main thinking of switching to ADC. Look at my stats — am I ready?\"\n- \"Analyze my Jinx games vs my Caitlyn games. Which should I one-trick to reach Platinum?\"\n- \"Track my progress: compare my last 20 games vs the 20 before. Am I actually improving?\"",
     "type": "object",
     "schemaVersion": 1,
     "properties": {
         "riotApiKey": {
             "title": "Riot API Key",
             "type": "string",
-            "description": "Your Riot Games API key. Get it from <a href='https://developer.riotgames.com/' target='_blank'>developer.riotgames.com</a>. Log in with your Riot account, then copy the key from the Dashboard. Can also be set as RIOT_API_KEY environment variable. Development keys expire every 24h.",
+            "description": "Free key from <a href='https://developer.riotgames.com/' target='_blank'>developer.riotgames.com</a> — log in with your LoL account and copy the key. Takes 30 seconds. Development keys expire every 24h.",
             "editor": "textfield",
             "isSecret": true,
-            "sectionCaption": "Riot Games Authentication",
-            "sectionDescription": "A Riot API key is required to access League of Legends data."
+            "sectionCaption": "Your Riot API Key",
+            "sectionDescription": "Required to access your League of Legends data. Your key is stored securely and only used to call Riot's API."
         },
         "defaultRegion": {
             "title": "Default Region",
@@ -55,8 +55,8 @@
                 "Taiwan (TW)",
                 "Vietnam (VN)"
             ],
-            "sectionCaption": "Settings",
-            "sectionDescription": "Configure default options for the MCP server."
+            "sectionCaption": "Game Settings",
+            "sectionDescription": "Configure your default game region and preferences."
         },
         "defaultLanguage": {
             "title": "Default Language",

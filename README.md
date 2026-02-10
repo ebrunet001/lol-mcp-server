@@ -65,30 +65,25 @@ Once connected, your AI assistant can use these tools:
 | `lol_get_improvement_tips` | Get personalized improvement tips |
 | `lol_compare_players` | Compare stats between two players |
 
-## 💬 Example Prompts
+## 💬 What can AI do with your LoL data?
 
-Once connected to Claude, try these prompts:
+### Post-game coaching
+> "I just lost 3 games in a row. Analyze what went wrong — am I repeating the same mistakes?"
 
-```
-Show me the profile of player "Faker#KR1" on the Korean server
-```
+### Champion pool optimization
+> "Based on my last 50 games, which 3 champions should I focus on to climb fastest?"
 
-```
-Analyze my last 20 ranked games and tell me what I need to improve. 
-My Riot ID is "YourName#EUW"
-```
+### Duo synergy analysis
+> "Compare me and my duo partner. What are our strengths together? What should we work on?"
 
-```
-What are my best champions based on mastery and recent performance?
-```
+### Role swap readiness
+> "I'm a support main thinking of switching to mid. Analyze my stats — am I ready?"
 
-```
-Compare my stats on Jinx vs my stats on Caitlyn over my last 30 games
-```
+### Improvement tracking
+> "Compare my stats from this week vs last week. Am I getting better or stuck?"
 
-```
-Give me tips to climb from Gold to Platinum based on my gameplay patterns
-```
+### Live scouting
+> "I'm in game right now. Look up my opponents and tell me what to watch out for."
 
 ## 🌍 Supported Regions
 
