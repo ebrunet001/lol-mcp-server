@@ -168,11 +168,14 @@ Actor.main(async () => {
     initRiotClient(input.riotApiKey, defaultRegion);
     log.info(`Riot API client initialized with default region: ${defaultRegion}`);
 
-    await initDataDragon();
-
     // Detect how the run was started
     const metaOrigin = process.env.APIFY_META_ORIGIN;
     const isStandbyRun = metaOrigin === 'STANDBY';
+
+    // Only load Data Dragon for Standby/Local modes (skip for normal validation runs)
+    if (isStandbyRun || !Actor.isAtHome()) {
+        await initDataDragon();
+    }
 
     if (isStandbyRun) {
         // --- STANDBY RUN: Start HTTP server and keep alive ---
@@ -206,8 +209,6 @@ Actor.main(async () => {
             log.warning('The MCP server will still work in Standby mode once a valid API key is provided.');
         }
 
-        const dataDragonStatus = getDataDragonStatus();
-
         await Actor.pushData({
             status: riotApiKeyValid ? 'success' : 'warning',
             message: riotApiKeyValid
@@ -216,13 +217,12 @@ Actor.main(async () => {
             riotApiKeyValid,
             defaultRegion,
             cacheEnabled,
-            dataDragon: dataDragonStatus,
             toolsAvailable: toolCounts.total,
             tools: allTools.map((t: any) => t.name),
             timestamp: new Date().toISOString(),
         });
 
-        log.info(`Validation complete. ${toolCounts.total} tools, Data Dragon v${dataDragonStatus.version}. API key valid: ${riotApiKeyValid}.`);
+        log.info(`Validation complete. ${toolCounts.total} tools. API key valid: ${riotApiKeyValid}.`);
 
     } else {
         // --- LOCAL DEVELOPMENT ---

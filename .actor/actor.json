@@ -6,8 +6,8 @@
     "description": "Advanced MCP Server for League of Legends analytics. Features Data Dragon integration, intelligent caching, live game spectating, player comparison, and AI-powered improvement recommendations.",
     "version": "2.0",
     "buildTag": "latest",
-    "minMemoryMbytes": 256,
-    "maxMemoryMbytes": 1024,
+    "minMemoryMbytes": 128,
+    "maxMemoryMbytes": 512,
     "meta": {
         "author": "Emmanuel-Aristide",
         "categories": ["GAMING", "AI", "ANALYTICS"],

@@ -10,31 +10,31 @@ interface CacheConfig {
 // Different cache stores with different TTLs
 const caches = {
     dataDragon: new LRUCache<string, any>({
-        max: 100,
+        max: 50,
         ttl: CACHE_TTL.DATA_DRAGON,
     }),
     playerProfile: new LRUCache<string, any>({
-        max: 500,
+        max: 50,
         ttl: CACHE_TTL.PLAYER_PROFILE,
     }),
     rankedInfo: new LRUCache<string, any>({
-        max: 500,
+        max: 50,
         ttl: CACHE_TTL.RANKED_INFO,
     }),
     matchDetails: new LRUCache<string, any>({
-        max: 1000,
+        max: 100,
         ttl: CACHE_TTL.MATCH_DETAILS,
     }),
     matchIds: new LRUCache<string, any>({
-        max: 500,
+        max: 50,
         ttl: CACHE_TTL.MATCH_IDS,
     }),
     liveGame: new LRUCache<string, any>({
-        max: 100,
+        max: 20,
         ttl: CACHE_TTL.LIVE_GAME,
     }),
     championMastery: new LRUCache<string, any>({
-        max: 500,
+        max: 50,
         ttl: CACHE_TTL.CHAMPION_MASTERY,
     }),
 };
