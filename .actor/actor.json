@@ -3,14 +3,14 @@
     "id": "EC9IhPoWo8Z4mHPJU",
     "name": "lol-mcp-server",
     "title": "League of Legends MCP Server - AI Game Analysis",
-    "description": "Advanced MCP Server for League of Legends analytics. Features Data Dragon integration, intelligent caching, live game spectating, player comparison, and AI-powered improvement recommendations.",
+    "description": "Connect AI assistants to League of Legends data via MCP. 13 tools for player profiles, ranked stats, match history, champion mastery, live game, player comparison & AI-powered performance analysis. Works with Claude Desktop, ChatGPT & any MCP-compatible AI agent.",
     "version": "2.0",
     "buildTag": "latest",
     "minMemoryMbytes": 128,
     "maxMemoryMbytes": 512,
     "meta": {
         "author": "Emmanuel-Aristide",
-        "categories": ["GAMING", "AI", "ANALYTICS"],
+        "categories": ["AI", "AGENTS", "MCP_SERVERS"],
         "website": "https://github.com/ebrunet001/lol-mcp-server"
     },
     "input": "./input_schema.json",
