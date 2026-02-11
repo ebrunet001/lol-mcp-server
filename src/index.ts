@@ -22,6 +22,15 @@ const transports: Map<string, Transport> = new Map();
 function createApp(defaultRegion: string, cacheEnabled: boolean) {
     const app = express();
 
+    // Apify Standby readiness probe handler
+    app.get('/', (req: Request, res: Response, next) => {
+        if (req.headers['x-apify-container-server-readiness-probe']) {
+            res.status(200).send('OK');
+            return;
+        }
+        next();
+    });
+
     // Body parsing middleware (skip for legacy SSE /messages endpoint)
     app.use((req, res, next) => {
         if (req.path === '/messages') {
@@ -134,7 +143,6 @@ function createApp(defaultRegion: string, cacheEnabled: boolean) {
         await server.connect(transport);
         log.info(`MCP server connected for session: ${sessionId}`);
     };
-    app.get('/', handleSSE);
     app.get('/sse', handleSSE);
 
     // Messages endpoint for legacy SSE client-to-server communication
