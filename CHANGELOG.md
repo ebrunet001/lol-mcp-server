@@ -6,6 +6,38 @@
 
 ---
 
+## v2.0.17 (2026-02-12) - Streamable HTTP only + Claude Desktop fix
+
+Migration vers le pattern officiel Apify (template `ts-mcp-empty`).
+
+### Breaking changes
+- **SSE supprime** : les endpoints `/sse` et `/messages` n'existent plus
+- **Port** : utilise `APIFY_CONTAINER_PORT` au lieu de `ACTOR_STANDBY_PORT`
+
+### Modifications
+- **Streamable HTTP stateless** : nouveau serveur + transport par requête (`sessionIdGenerator: undefined`), pas de gestion de sessions
+- **CORS** : ajout du middleware `cors` avec `exposedHeaders: ['Mcp-Session-Id']` pour compatibilite Claude Desktop
+- **GET /mcp** et **DELETE /mcp** retournent 405 Method Not Allowed
+- **Cleanup automatique** : `transport.close()` et `server.close()` sur `res.on('close')`
+- **Imports nettoyés** : suppression de `randomUUID`, `SSEServerTransport`, `isInitializeRequest`, `Transport`
+- **Clé Riot API** : configurée en env var secrète sur la version 2.0
+
+### Endpoints (mis à jour)
+| Path | Methode | Description |
+|---|---|---|
+| `/health` | GET | Health check avec status des services |
+| `/mcp` | POST | Streamable HTTP MCP (stateless) |
+| `/mcp` | GET/DELETE | 405 Method Not Allowed |
+| `/tools` | GET | Liste des outils disponibles |
+| `/docs` | GET | Documentation markdown |
+
+### URL de connexion Claude Desktop
+```
+https://scrapmania--lol-mcp-server.apify.actor/mcp?token=<APIFY_TOKEN>
+```
+
+---
+
 ## v2.0.13 (2026-02-11) - Readiness probe fix
 
 - **Readiness probe Apify** : le handler `/` retourne un simple `200 OK` au lieu de créer une session MCP inutile via SSE
@@ -111,11 +143,11 @@ Consolidation de 3 Actors LoL MCP separees en un seul Actor v2.0 :
 ### Apify Standby - Routing
 - Le proxy Standby d'Apify **ne forwarde pas** les requêtes externes vers `/`
 - Seul le readiness probe interne (header `x-apify-container-server-readiness-probe`) touche `/`
-- Les endpoints MCP doivent utiliser un path explicite (`/sse`, `/mcp`)
+- L'endpoint MCP doit utiliser le path `/mcp`
 
 ### URL de connexion Claude Desktop
 ```
-https://scrapmania--lol-mcp-server.apify.actor/sse?token=<APIFY_TOKEN>
+https://scrapmania--lol-mcp-server.apify.actor/mcp?token=<APIFY_TOKEN>
 ```
 
 ### lru-cache v10

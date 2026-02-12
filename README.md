@@ -161,10 +161,10 @@ The MCP server exposes League of Legends data through the Model Context Protocol
 - The player may have changed their name recently
 
 ### Claude Desktop Not Connecting
-- Ensure Node.js 18+ is installed
-- Verify the config file path is correct
+- Ensure you're using the full URL with `/mcp` path: `https://scrapmania--lol-mcp-server.apify.actor/mcp?token=YOUR_TOKEN`
+- Verify your Apify token is valid at [console.apify.com](https://console.apify.com/account/integrations)
 - Restart Claude Desktop after configuration changes
-- Check your Apify token is valid
+- The server may need a few seconds to start on first connection (cold start)
 
 ## 📚 Resources
 
