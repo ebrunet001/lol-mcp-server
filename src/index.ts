@@ -1,9 +1,7 @@
-import { randomUUID } from 'node:crypto';
 import { Actor, log } from 'apify';
 import express, { Request, Response } from 'express';
-import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import cors from 'cors';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { createMcpServer } from './server.js';
 import { initRiotClient, getAccountByRiotId } from './services/riot-client.js';
 import { initDataDragon, getDataDragonStatus } from './services/data-dragon.js';
@@ -11,33 +9,25 @@ import { initCache, getCacheStats } from './services/cache.js';
 import { getRateLimitStatus } from './services/rate-limiter.js';
 import { allTools, toolCounts } from './tools/index.js';
 import type { Region, ActorInput } from './types/index.js';
-import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
-
-// Store active transports (both SSE and StreamableHTTP)
-const transports: Map<string, Transport> = new Map();
 
 /**
  * Create and configure the Express app with all MCP endpoints
  */
 function createApp(defaultRegion: string, cacheEnabled: boolean) {
     const app = express();
+    app.use(express.json());
+    app.use(cors({
+        origin: '*',
+        exposedHeaders: ['Mcp-Session-Id'],
+    }));
 
     // Apify Standby readiness probe handler
-    app.get('/', (req: Request, res: Response, next) => {
+    app.get('/', (req: Request, res: Response) => {
         if (req.headers['x-apify-container-server-readiness-probe']) {
             res.status(200).send('OK');
             return;
         }
-        next();
-    });
-
-    // Body parsing middleware (skip for legacy SSE /messages endpoint)
-    app.use((req, res, next) => {
-        if (req.path === '/messages') {
-            next();
-        } else {
-            express.json()(req, res, next);
-        }
+        res.status(404).end();
     });
 
     // Health check endpoint
@@ -59,55 +49,22 @@ function createApp(defaultRegion: string, cacheEnabled: boolean) {
         });
     });
 
-    // Streamable HTTP endpoint for MCP connections (protocol version 2025-11-25)
-    app.all('/mcp', async (req: Request, res: Response) => {
-        log.info(`Received ${req.method} request to /mcp`);
+    // Streamable HTTP endpoint — stateless, one server+transport per request
+    app.post('/mcp', async (req: Request, res: Response) => {
+        log.info('Received POST /mcp request');
 
+        const server = createMcpServer();
         try {
-            const sessionId = req.headers['mcp-session-id'] as string | undefined;
-            let transport: StreamableHTTPServerTransport;
-
-            if (sessionId && transports.has(sessionId)) {
-                const existing = transports.get(sessionId)!;
-                if (existing instanceof StreamableHTTPServerTransport) {
-                    transport = existing;
-                } else {
-                    res.status(400).json({
-                        jsonrpc: '2.0',
-                        error: { code: -32000, message: 'Session uses a different transport protocol' },
-                        id: null,
-                    });
-                    return;
-                }
-            } else if (!sessionId && req.method === 'POST' && isInitializeRequest(req.body)) {
-                transport = new StreamableHTTPServerTransport({
-                    sessionIdGenerator: () => randomUUID(),
-                    onsessioninitialized: (sid) => {
-                        log.info(`StreamableHTTP session initialized: ${sid}`);
-                        transports.set(sid, transport);
-                    },
-                });
-
-                transport.onclose = () => {
-                    const sid = transport.sessionId;
-                    if (sid && transports.has(sid)) {
-                        log.info(`StreamableHTTP session closed: ${sid}`);
-                        transports.delete(sid);
-                    }
-                };
-
-                const server = createMcpServer();
-                await server.connect(transport);
-            } else {
-                res.status(400).json({
-                    jsonrpc: '2.0',
-                    error: { code: -32000, message: 'Bad Request: No valid session ID provided' },
-                    id: null,
-                });
-                return;
-            }
-
+            const transport = new StreamableHTTPServerTransport({
+                sessionIdGenerator: undefined,
+            });
+            await server.connect(transport);
             await transport.handleRequest(req, res, req.body);
+            res.on('close', () => {
+                log.info('Request closed');
+                transport.close();
+                server.close();
+            });
         } catch (error: any) {
             log.error(`Error handling /mcp request: ${error.message}`);
             if (!res.headersSent) {
@@ -120,52 +77,20 @@ function createApp(defaultRegion: string, cacheEnabled: boolean) {
         }
     });
 
-    // SSE endpoint for MCP connections (protocol version 2024-11-05)
-    const handleSSE = async (req: Request, res: Response) => {
-        log.info('New SSE connection request');
+    app.get('/mcp', (_req: Request, res: Response) => {
+        res.writeHead(405).end(JSON.stringify({
+            jsonrpc: '2.0',
+            error: { code: -32000, message: 'Method not allowed.' },
+            id: null,
+        }));
+    });
 
-        res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Connection', 'keep-alive');
-        res.setHeader('Access-Control-Allow-Origin', '*');
-
-        const transport = new SSEServerTransport('/messages', res);
-        const sessionId = transport.sessionId;
-        transports.set(sessionId, transport);
-
-        const server = createMcpServer();
-
-        req.on('close', () => {
-            log.info(`Client disconnected: ${sessionId}`);
-            transports.delete(sessionId);
-        });
-
-        await server.connect(transport);
-        log.info(`MCP server connected for session: ${sessionId}`);
-    };
-    app.get('/sse', handleSSE);
-
-    // Messages endpoint for legacy SSE client-to-server communication
-    app.post('/messages', async (req: Request, res: Response) => {
-        const sessionId = req.query.sessionId as string;
-
-        if (!sessionId) {
-            res.status(400).json({ error: 'Session ID required' });
-            return;
-        }
-
-        const transport = transports.get(sessionId);
-        if (!transport || !(transport instanceof SSEServerTransport)) {
-            res.status(404).json({ error: 'Session not found' });
-            return;
-        }
-
-        try {
-            await transport.handlePostMessage(req, res);
-        } catch (error: any) {
-            log.error(`Error handling message: ${error.message}`);
-            res.status(500).json({ error: error.message });
-        }
+    app.delete('/mcp', (_req: Request, res: Response) => {
+        res.writeHead(405).end(JSON.stringify({
+            jsonrpc: '2.0',
+            error: { code: -32000, message: 'Method not allowed.' },
+            id: null,
+        }));
     });
 
     // List tools endpoint
@@ -258,8 +183,8 @@ Actor.main(async () => {
     if (isStandbyRun) {
         // --- STANDBY RUN: Start HTTP server and keep alive ---
         const app = createApp(defaultRegion, cacheEnabled);
-        const port = process.env.ACTOR_STANDBY_PORT
-            ? parseInt(process.env.ACTOR_STANDBY_PORT, 10)
+        const port = process.env.APIFY_CONTAINER_PORT
+            ? parseInt(process.env.APIFY_CONTAINER_PORT, 10)
             : 8080;
 
         app.listen(port, () => {
