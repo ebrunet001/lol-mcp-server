@@ -166,6 +166,46 @@ The MCP server exposes League of Legends data through the Model Context Protocol
 - Restart Claude Desktop after configuration changes
 - The server may need a few seconds to start on first connection (cold start)
 
+## 💰 How much does it cost?
+
+This MCP server uses Apify's pay-per-event pricing. You only pay for the tools you actually use:
+
+| Event | Price | Description |
+|-------|-------|-------------|
+| Tool call | $0.01 | Each MCP tool invocation |
+
+**Free tier**: Apify gives you $5 free credits every month. That's enough for approximately 500 tool calls — plenty for regular gameplay analysis.
+
+**Example costs**:
+- Quick player lookup (1 tool call): ~$0.01
+- Full performance analysis (3-5 tool calls): ~$0.03-$0.05
+- Detailed coaching session (10-15 tool calls): ~$0.10-$0.15
+
+## FAQ
+
+### Do I need a Riot Games account?
+Yes. You need a Riot Games account to generate an API key at [developer.riotgames.com](https://developer.riotgames.com/). This is the same account you use to play League of Legends.
+
+### Does the development API key expire?
+Yes, development keys expire every 24 hours. You need to regenerate your key daily. For permanent access, apply for a Personal API key through the Riot Developer Portal.
+
+### Does this work with ChatGPT?
+Yes. Any MCP-compatible AI client can connect to this server. It works with Claude Desktop, ChatGPT, and other AI agents that support the Model Context Protocol.
+
+### Is my data stored?
+No. The server processes requests in real-time and does not store any player data permanently. All data is fetched directly from Riot Games' official API.
+
+### Which regions are supported?
+All League of Legends regions are supported: EUW, EUNE, NA, KR, BR, LAN, LAS, OCE, TR, RU, JP, PH, SG, TH, TW, VN.
+
+### Can I analyze other players?
+Yes. You can look up any player's public data by providing their Riot ID (gameName#tagLine). No special permissions are needed for public data.
+
+## Related Actors
+
+- [Vivino Wine Scraper](https://apify.com/scrapmania/vivino-powerful-scraper) - Extract wine ratings and prices from Vivino
+- [Millesima Wine Scraper](https://apify.com/scrapmania/millesima-wine-scraper) - Scrape wine data with critic ratings from Millesima.fr
+
 ## 📚 Resources
 
 - [GitHub Repository](https://github.com/ebrunet001/lol-mcp-server)

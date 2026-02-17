@@ -20,5 +20,8 @@
     "dockerfile": "./Dockerfile",
     "storages": {
         "dataset": "./dataset_schema.json"
+    },
+    "permissions": {
+        "limitedPermissions": true
     }
 }
