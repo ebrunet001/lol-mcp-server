@@ -14,7 +14,7 @@
         "website": "https://github.com/ebrunet001/lol-mcp-server"
     },
     "seoTitle": "League of Legends MCP Server | AI Game Analysis for LoL",
-    "seoDescription": "LoL MCP server for AI assistants. Player profiles, ranked stats, match history, live game and AI coaching via Claude Desktop.",
+    "seoDescription": "LoL MCP server for AI assistants. Player profiles, ranked stats, match history, champion mastery, live game & AI-powered coaching via Claude Desktop.",
     "input": "./input_schema.json",
     "output": "./output_schema.json",
     "dockerfile": "./Dockerfile",
