@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createMcpServer } from './server.js';
-import { initRiotClient, getAccountByRiotId } from './services/riot-client.js';
+import { initRiotClient, getAccountByRiotId, setApiKeyRefreshCallback } from './services/riot-client.js';
 import { initDataDragon, getDataDragonStatus } from './services/data-dragon.js';
 import { initCache, getCacheStats } from './services/cache.js';
 import { getRateLimitStatus } from './services/rate-limiter.js';
@@ -21,13 +21,15 @@ function createApp(defaultRegion: string, cacheEnabled: boolean) {
         exposedHeaders: ['Mcp-Session-Id'],
     }));
 
-    // Apify Standby readiness probe handler
+    // Apify Standby readiness probe + root info
     app.get('/', (req: Request, res: Response) => {
-        if (req.headers['x-apify-container-server-readiness-probe']) {
-            res.status(200).send('OK');
-            return;
-        }
-        res.status(404).end();
+        res.status(200).json({
+            name: 'lol-mcp-server',
+            status: 'running',
+            mcp: '/mcp',
+            health: '/health',
+            docs: '/docs',
+        });
     });
 
     // Health check endpoint
@@ -150,12 +152,66 @@ Advanced MCP Server for League of Legends analytics with Data Dragon integration
     return app;
 }
 
-Actor.main(async () => {
-    // Get input
-    const input = await Actor.getInput<ActorInput>();
+const CONFIG_STORE_NAME = 'lol-mcp-config';
+const CONFIG_KEY = 'SAVED_INPUT';
 
-    // Riot API key: from input, environment variable, or missing (Standby will start but tools will fail)
-    const riotApiKey = input?.riotApiKey || process.env.RIOT_API_KEY || '';
+/**
+ * Save the Actor input to a named key-value store that persists across runs.
+ * Called during normal runs so Standby runs can retrieve the config later.
+ */
+async function saveInputConfig(input: ActorInput): Promise<void> {
+    try {
+        const store = await Actor.openKeyValueStore(CONFIG_STORE_NAME);
+        await store.setValue(CONFIG_KEY, input);
+        log.info('Saved input config to named KV store for Standby use');
+    } catch (error: any) {
+        log.warning(`Failed to save input config: ${error.message}`);
+    }
+}
+
+/**
+ * Load saved input config from the named key-value store.
+ * In Standby mode, Actor.getInput() returns empty, so we read from persistent storage.
+ */
+async function loadSavedInputConfig(): Promise<ActorInput | null> {
+    try {
+        const store = await Actor.openKeyValueStore(CONFIG_STORE_NAME);
+        const saved = await store.getValue<ActorInput>(CONFIG_KEY);
+        if (saved?.riotApiKey) {
+            log.info('Found saved Riot API key in named KV store');
+            return saved;
+        }
+        log.info('Named KV store exists but no riotApiKey found');
+    } catch (error: any) {
+        log.warning(`Failed to load saved input config: ${error.message}`);
+    }
+    return null;
+}
+
+Actor.main(async () => {
+    const isStandbyRun = process.env.APIFY_META_ORIGIN === 'STANDBY';
+
+    // Get input: try Actor.getInput(), then named KV store fallback
+    let input = await Actor.getInput<ActorInput>();
+    let riotApiKey = input?.riotApiKey || process.env.RIOT_API_KEY || '';
+
+    // In Standby mode, Actor.getInput() is unreliable (returns stale/empty data).
+    // Always prefer the saved config from the last normal run.
+    if (isStandbyRun || !riotApiKey) {
+        log.info('Loading saved config from KV store...');
+        const savedInput = await loadSavedInputConfig();
+        if (savedInput?.riotApiKey) {
+            riotApiKey = savedInput.riotApiKey;
+            input = { ...input, ...savedInput };
+            log.info('Loaded API key from saved config');
+        }
+    }
+
+    // Save config ONLY during normal runs (Standby would overwrite with stale data)
+    if (riotApiKey && input && !isStandbyRun) {
+        await saveInputConfig(input);
+    }
+
     const defaultRegion = input?.defaultRegion || 'euw1';
     const cacheEnabled = input?.cacheEnabled !== false;
 
@@ -171,9 +227,12 @@ Actor.main(async () => {
     initRiotClient(riotApiKey, defaultRegion);
     log.info(`Riot API client initialized with default region: ${defaultRegion}`);
 
-    // Detect how the run was started
-    const metaOrigin = process.env.APIFY_META_ORIGIN;
-    const isStandbyRun = metaOrigin === 'STANDBY';
+    // Register callback to auto-refresh API key on 401 errors
+    setApiKeyRefreshCallback(async () => {
+        log.info('Attempting to reload API key from saved config...');
+        const saved = await loadSavedInputConfig();
+        return saved?.riotApiKey || null;
+    });
 
     // Only load Data Dragon for Standby/Local modes (skip for normal validation runs)
     if (isStandbyRun || !Actor.isAtHome()) {
@@ -196,7 +255,7 @@ Actor.main(async () => {
 
     } else if (Actor.isAtHome()) {
         // --- NORMAL RUN: Validate configuration and exit ---
-        log.info(`Running in normal mode (origin: ${metaOrigin}) - validating configuration...`);
+        log.info(`Running in normal mode (origin: ${process.env.APIFY_META_ORIGIN}) - validating configuration...`);
 
         let riotApiKeyValid = false;
         let validationMessage = '';

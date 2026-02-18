@@ -16,6 +16,7 @@ import type {
 
 let riotApiKey: string | null = null;
 let defaultRegion: Region = 'euw1';
+let apiKeyRefreshCallback: (() => Promise<string | null>) | null = null;
 
 /**
  * Initialize the Riot API client
@@ -24,6 +25,21 @@ export function initRiotClient(apiKey: string, region: Region = 'euw1'): void {
     riotApiKey = apiKey;
     defaultRegion = region;
     log.info(`Riot API client initialized for region: ${region}`);
+}
+
+/**
+ * Update the API key at runtime (e.g. after reloading from KV store)
+ */
+export function updateApiKey(newKey: string): void {
+    riotApiKey = newKey;
+}
+
+/**
+ * Register a callback to refresh the API key on 401 errors.
+ * The callback should return a new API key or null if unavailable.
+ */
+export function setApiKeyRefreshCallback(callback: () => Promise<string | null>): void {
+    apiKeyRefreshCallback = callback;
 }
 
 /**
@@ -47,9 +63,8 @@ export function getRegionalRoute(region: Region): RegionalRoute {
  * Make a request to the Riot API
  */
 async function riotFetch<T>(url: string, priority: number = 0): Promise<T> {
-    const apiKey = getApiKey();
-
     return withRetry(async () => {
+        const apiKey = getApiKey();
         const response = await fetch(url, {
             headers: {
                 'X-Riot-Token': apiKey,
@@ -62,6 +77,23 @@ async function riotFetch<T>(url: string, priority: number = 0): Promise<T> {
             log.error(`Riot API error: ${response.status} - ${errorBody}`);
 
             if (response.status === 401) {
+                // Try to refresh the API key from KV store
+                if (apiKeyRefreshCallback) {
+                    log.info('API key rejected (401), attempting to reload from saved config...');
+                    const newKey = await apiKeyRefreshCallback();
+                    if (newKey && newKey !== apiKey) {
+                        riotApiKey = newKey;
+                        log.info('API key refreshed from saved config, retrying...');
+                        const retryResponse = await fetch(url, {
+                            headers: { 'X-Riot-Token': newKey, 'Accept': 'application/json' },
+                        });
+                        if (retryResponse.ok) {
+                            return retryResponse.json() as Promise<T>;
+                        }
+                        const retryBody = await retryResponse.text();
+                        log.error(`Retry after key refresh failed: ${retryResponse.status} - ${retryBody}`);
+                    }
+                }
                 throw new Error('Invalid Riot API key');
             }
             if (response.status === 403) {
