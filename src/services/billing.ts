@@ -3,29 +3,25 @@ import type { BillingEvent } from '../types/index.js';
 
 // Tool to billing event mapping
 const TOOL_EVENTS: Record<string, BillingEvent> = {
-    // Read tools (simple data retrieval)
+    // Read tools — simple data retrieval ($0.005)
     'lol_get_account': 'tool-read',
     'lol_get_summoner': 'tool-read',
     'lol_get_ranked': 'tool-read',
     'lol_get_champion_mastery': 'tool-read',
 
-    // Match tools
-    'lol_get_match_history': 'tool-match',
-    'lol_get_match_details': 'tool-match',
-    'lol_get_match_timeline': 'tool-match',
-    'lol_get_player_profile': 'tool-match', // Multiple API calls
+    // Action tools — match data, live game, player profile ($0.01)
+    'lol_get_player_profile': 'tool-action',
+    'lol_get_match_history': 'tool-action',
+    'lol_get_match_details': 'tool-action',
+    'lol_get_match_timeline': 'tool-action',
+    'lol_get_live_game': 'tool-action',
 
-    // Analysis tools
-    'lol_analyze_performance': 'tool-analysis',
-    'lol_analyze_champion': 'tool-analysis',
-    'lol_analyze_laning': 'tool-analysis',
-    'lol_get_improvement_tips': 'tool-analysis',
-
-    // Live game tools
-    'lol_get_live_game': 'tool-live',
-
-    // Comparison tools
-    'lol_compare_players': 'tool-compare',
+    // AI tools — analysis and comparison ($0.025)
+    'lol_analyze_performance': 'tool-ai',
+    'lol_analyze_champion': 'tool-ai',
+    'lol_analyze_laning': 'tool-ai',
+    'lol_get_improvement_tips': 'tool-ai',
+    'lol_compare_players': 'tool-ai',
 };
 
 /**
@@ -54,11 +50,9 @@ export async function chargeForTool(toolName: string): Promise<void> {
  * Pricing info for display
  */
 export const PRICING: Record<BillingEvent, { priceUsd: number; description: string }> = {
-    'tool-read': { priceUsd: 0.003, description: 'Data Read' },
-    'tool-match': { priceUsd: 0.005, description: 'Match Data' },
-    'tool-analysis': { priceUsd: 0.015, description: 'AI Analysis' },
-    'tool-live': { priceUsd: 0.008, description: 'Live Game' },
-    'tool-compare': { priceUsd: 0.025, description: 'Player Comparison' },
+    'tool-read': { priceUsd: 0.005, description: 'Read Operation' },
+    'tool-action': { priceUsd: 0.01, description: 'Action' },
+    'tool-ai': { priceUsd: 0.025, description: 'AI Analysis' },
 };
 
 /**

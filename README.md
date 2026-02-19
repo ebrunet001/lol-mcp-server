@@ -170,16 +170,19 @@ The MCP server exposes League of Legends data through the Model Context Protocol
 
 This MCP server uses Apify's pay-per-event pricing. You only pay for the tools you actually use:
 
-| Event | Price | Description |
-|-------|-------|-------------|
-| Tool call | $0.01 | Each MCP tool invocation |
+| Operation | Price | Examples |
+|-----------|-------|----------|
+| **Read** | $0.005 | get_account, get_summoner, get_ranked, get_champion_mastery |
+| **Action** | $0.01 | get_match_history, get_match_details, get_live_game |
+| **AI** | $0.025 | analyze_performance, analyze_champion, compare_players |
 
-**Free tier**: Apify gives you $5 free credits every month. That's enough for approximately 500 tool calls — plenty for regular gameplay analysis.
+**Free tier**: Apify gives you $5 free credits every month — enough for hundreds of tool calls.
 
 **Example costs**:
-- Quick player lookup (1 tool call): ~$0.01
-- Full performance analysis (3-5 tool calls): ~$0.03-$0.05
-- Detailed coaching session (10-15 tool calls): ~$0.10-$0.15
+- Quick player lookup (2 reads): ~$0.01
+- Match history review (1 read + 3 actions): ~$0.035
+- Full performance analysis with AI (2 reads + 2 actions + 2 AI): ~$0.08
+- Detailed coaching session (5 reads + 5 actions + 3 AI): ~$0.15
 
 ## FAQ
 

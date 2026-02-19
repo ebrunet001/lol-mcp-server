@@ -11,12 +11,7 @@ export interface ActorInput {
 }
 
 // Billing Events
-export type BillingEvent =
-    | 'tool-read'
-    | 'tool-match'
-    | 'tool-analysis'
-    | 'tool-live'
-    | 'tool-compare';
+export type BillingEvent = 'tool-read' | 'tool-action' | 'tool-ai';
 
 // Analysis Types
 export interface PlayerStats {
