@@ -2,7 +2,7 @@
 
 Connect AI assistants to League of Legends data via Model Context Protocol. Let AI analyze your performance, identify weaknesses & suggest optimal strategies. Access player profiles, match history, ranked stats & champion mastery.
 
-## 🎮 Features
+## Features
 
 - **Player Profiles** - Search players by Riot ID (gameName#tagLine) across all regions
 - **Ranked Stats** - Get tier, rank, LP, win/loss ratio and league standings
@@ -15,7 +15,7 @@ Connect AI assistants to League of Legends data via Model Context Protocol. Let 
 - **Intelligent Caching** - Reduces API calls with smart TTL-based caching
 - **Multi-Region Support** - EUW, NA, KR, BR, and all other LoL servers
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Get your Riot API Key
 
@@ -23,7 +23,7 @@ Connect AI assistants to League of Legends data via Model Context Protocol. Let 
 2. Log in with your **Riot Games account** (same as your LoL account)
 3. Copy your **Development API Key** from the dashboard
 
-> ⚠️ Development keys expire every **24 hours**. For permanent access, apply for a Personal key.
+> Development keys expire every **24 hours**. For permanent access, apply for a Personal key.
 
 ### 2. Configure the Actor
 
@@ -43,9 +43,19 @@ https://scrapmania--lol-mcp-server.apify.actor/mcp?token=YOUR_APIFY_TOKEN
 
 Replace `YOUR_APIFY_TOKEN` with your [Apify API token](https://console.apify.com/account/integrations).
 
+### 4. Grant permanent permissions (recommended)
+
+By default, Claude Desktop asks for approval every time an MCP tool is called. To allow all LoL tools permanently:
+
+In **Claude Code**, run `/permissions` and add `mcp__LoL__*` to the **Allow** list.
+
+In **Claude Desktop**, click **"Always allow"** when prompted for the first tool call.
+
+> The prefix `mcp__LoL__` matches the MCP server name. If you used a different name (e.g., `lol`), adjust the pattern accordingly (`mcp__lol__*`).
+
 That's it! Claude can now access your League of Legends data.
 
-## 🔧 Available Tools
+## Available Tools
 
 Once connected, your AI assistant can use these tools:
 
@@ -65,7 +75,7 @@ Once connected, your AI assistant can use these tools:
 | `lol_get_improvement_tips` | Get personalized improvement tips |
 | `lol_compare_players` | Compare stats between two players |
 
-## 💬 What can AI do with your LoL data?
+## What can AI do with your LoL data?
 
 ### Post-game coaching
 > "I just lost 3 games in a row. Analyze what went wrong — am I repeating the same mistakes?"
@@ -85,7 +95,7 @@ Once connected, your AI assistant can use these tools:
 ### Live scouting
 > "I'm in game right now. Look up my opponents and tell me what to watch out for."
 
-## 🌍 Supported Regions
+## Supported Regions
 
 | Region Code | Server |
 |-------------|--------|
@@ -106,25 +116,25 @@ Once connected, your AI assistant can use these tools:
 | `tw2` | Taiwan |
 | `vn2` | Vietnam |
 
-## 🔑 API Key Types
+## API Key Types
 
 ### Development Key (Default)
-- ✅ Automatically generated when you sign in
-- ⚠️ Expires every 24 hours
-- ✅ Good for testing and personal use
+- Automatically generated when you sign in
+- Expires every 24 hours
+- Good for testing and personal use
 - Rate limit: 20 requests / second, 100 requests / 2 minutes
 
 ### Personal Key
-- ✅ Does not expire
-- ✅ For personal projects or small communities
+- Does not expire
+- For personal projects or small communities
 - Register your product at [developer.riotgames.com](https://developer.riotgames.com/)
 
 ### Production Key
-- ✅ Higher rate limits
-- ✅ For public applications
+- Higher rate limits
+- For public applications
 - Requires product approval from Riot
 
-## ⚙️ Input Configuration
+## Input Configuration
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -133,7 +143,7 @@ Once connected, your AI assistant can use these tools:
 | `defaultLanguage` | string | No | Language for analysis (default: `en`) |
 | `cacheEnabled` | boolean | No | Enable intelligent caching (default: `true`) |
 
-## 📊 Output
+## Output
 
 The MCP server exposes League of Legends data through the Model Context Protocol, allowing any MCP-compatible AI assistant to:
 
@@ -142,14 +152,14 @@ The MCP server exposes League of Legends data through the Model Context Protocol
 - Provide personalized coaching advice
 - Track progress over time
 
-## 🔒 Privacy & Security
+## Privacy & Security
 
 - Your Riot API key is only used to authenticate requests to Riot's API
 - No player data is stored permanently
 - All requests are made directly to Riot Games' official API
 - This Actor complies with [Riot Games API Terms of Service](https://developer.riotgames.com/terms)
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### "API Key Invalid" Error
 - Check that your API key hasn't expired (development keys last 24h)
@@ -166,7 +176,7 @@ The MCP server exposes League of Legends data through the Model Context Protocol
 - Restart Claude Desktop after configuration changes
 - The server may need a few seconds to start on first connection (cold start)
 
-## 💰 How much does it cost?
+## How much does it cost?
 
 This MCP server uses Apify's pay-per-event pricing. You only pay for the tools you actually use:
 
@@ -206,10 +216,10 @@ Yes. You can look up any player's public data by providing their Riot ID (gameNa
 
 ## Related Actors
 
-- [Vivino Wine Scraper](https://apify.com/scrapmania/vivino-powerful-scraper) - Extract wine ratings and prices from Vivino
-- [Millesima Wine Scraper](https://apify.com/scrapmania/millesima-wine-scraper) - Scrape wine data with critic ratings from Millesima.fr
+- [TFT MCP Server](https://apify.com/scrapmania/teamfight-tactics-mcp-server---ai-game-analysis) - MCP server for Teamfight Tactics player analytics
+- [Todoist AI Assistant](https://apify.com/scrapmania/todoist-ai-assistant) - MCP server for AI-powered Todoist task management
 
-## 📚 Resources
+## Resources
 
 - [GitHub Repository](https://github.com/ebrunet001/lol-mcp-server)
 - [Riot Developer Portal](https://developer.riotgames.com/)
@@ -217,10 +227,10 @@ Yes. You can look up any player's public data by providing their Riot ID (gameNa
 - [Claude Desktop MCP Setup](https://docs.anthropic.com/en/docs/agents-and-tools/mcp)
 - [Apify MCP Documentation](https://docs.apify.com/platform/integrations/mcp)
 
-## 📝 License
+## License
 
 This Actor is provided as-is for educational and personal use. Usage must comply with [Riot Games API Terms and Conditions](https://developer.riotgames.com/terms).
 
 ---
 
-**Built with ❤️ for the League of Legends community**
+**Built for the League of Legends community**

@@ -1,7 +1,7 @@
 {
     "actorOutputSchemaVersion": 1,
-    "title": "LoL MCP Server Output",
-    "description": "Output from the League of Legends MCP Server Actor",
+    "title": "League of Legends MCP Server - AI Game Analysis Output",
+    "description": "Output from the League of Legends MCP Server - AI Game Analysis Actor",
     "type": "object",
     "properties": {
         "runUrl": {
